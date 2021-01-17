@@ -11,13 +11,13 @@ Prerquisites
 
 - JRE/JDK 11 or later must be installed (https://adoptopenjdk.net/)
 
-```
+<pre>
  java -jar ccrypt-j-cli [-d &lt;arg&gt; | -e &lt;arg&gt; | -h]  [-f]
  -d,--decrypt   &lt;arg&gt;   resource to decrypt (file or http)
  -e,--encrypt   &lt;arg&gt;   resource to encrypt (file)
  -f,--force     overwrite existing file
  -h,--help      print the help
-```
+</pre>
 
 ## Building from source
 
