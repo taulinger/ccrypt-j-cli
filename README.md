@@ -11,7 +11,6 @@ compatible with the [ccrypt](http://ccrypt.sourceforge.net/) command line tool.
 
 - JRE/JDK >= 11 must be installed (https://adoptopenjdk.net/)
 
-<code>
 <pre>
  java -jar ccrypt-j-cli [-d &lt;arg&gt; | -e &lt;arg&gt; | -h]  [-f]
  -d,--decrypt   &lt;arg&gt;   resource to decrypt (file or http)
@@ -19,7 +18,6 @@ compatible with the [ccrypt](http://ccrypt.sourceforge.net/) command line tool.
  -f,--force     overwrite existing file
  -h,--help      print the help
 </pre>
-</code>
 
 ## Building from source
 
