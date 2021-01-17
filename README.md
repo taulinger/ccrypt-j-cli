@@ -7,22 +7,22 @@ compatible with the [ccrypt](http://ccrypt.sourceforge.net/) command line tool.
 
 ## Usage
 
-### Prerquisites
+Prerquisites
 
-- JRE/JDK >= 11 must be installed (https://adoptopenjdk.net/)
+- JRE/JDK 11 or later must be installed (https://adoptopenjdk.net/)
 
-<pre>
+```
  java -jar ccrypt-j-cli [-d &lt;arg&gt; | -e &lt;arg&gt; | -h]  [-f]
  -d,--decrypt   &lt;arg&gt;   resource to decrypt (file or http)
  -e,--encrypt   &lt;arg&gt;   resource to encrypt (file)
  -f,--force     overwrite existing file
  -h,--help      print the help
-</pre>
+```
 
 ## Building from source
 
 Prerquisites
-- JRE/JDK 11 or later must be installed (https://adoptopenjdk.net/)
+- JDK 11 or later must be installed (https://adoptopenjdk.net/)
 - Maven 3 must be installed
 
 Steps
