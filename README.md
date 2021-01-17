@@ -34,4 +34,4 @@ git clone https://github.com/taulinger/ccrypt-j-cli
 ```
 mvn install
 ```
-- compiled artefact `ccrypt-j-cli.jar` can be found under `./target`
+- compiled artifact `ccrypt-j-cli.jar` can be found under `./target`
