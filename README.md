@@ -1,6 +1,8 @@
 ccrypt-j-cli
 ========
 
+[![Build Status](https://github.com/taulinger/ccrypt-j-cli/workflows/Java%20CI/badge.svg)](https://github.com/taulinger/ccrypt-j-cli/actions/workflows/java.yml?query=branch%3Amain)
+
 Command line interface for the ccrypt-j Java library for encrypting and decrypting files (https://github.com/chrsoo/ccrypt-j/) 
 compatible with the [ccrypt](http://ccrypt.sourceforge.net/) command line tool. 
 
