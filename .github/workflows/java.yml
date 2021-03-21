@@ -14,9 +14,8 @@ jobs:
           java-version: 11
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots verify
-      - name: Save Artifact
-        run: mkdir staging && cp target/ccrypt-j-cli.jar staging
-        uses: actions/upload-artifact@v2
+      - run: mkdir staging && cp target/ccrypt-j-cli.jar staging
+      - uses: actions/upload-artifact@v2
         with:
           name: Package
           path: staging
