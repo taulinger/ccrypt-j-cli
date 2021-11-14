@@ -15,7 +15,7 @@ import org.bouncycastle.crypto.params.KeyParameter;
  * <p>
  * Factory for creating CCryptKeys from CCryptKeySpec instances.
  * </p>
- * 
+ *
  * <p>
  * <b>This factory implementation is not thread safe!</b>
  * </p>
@@ -31,24 +31,22 @@ public class CCryptSecretKeyFactorySpi extends SecretKeyFactorySpi {
 	// -- SecretKeyFactorySpi
 
 	public CCryptSecretKeyFactorySpi(RijndaelEngine engine) {
-	    this.rijndael = engine;
+		this.rijndael = engine;
 	}
 
 	/**
 	 * <p>
 	 * Generate a CCryptKey from a CCryptKeySpec instance.
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * <b>This method is not thread safe!</b>
 	 * </p>
-	 * 
 	 * @param spec
 	 * @return
 	 */
 	@Override
-	public CCryptKey engineGenerateSecret(KeySpec spec)
-			throws InvalidKeySpecException {
+	public CCryptKey engineGenerateSecret(KeySpec spec) throws InvalidKeySpecException {
 
 		assertCCryptKeySpec(spec);
 
@@ -72,7 +70,8 @@ public class CCryptSecretKeyFactorySpi extends SecretKeyFactorySpi {
 			for (int i = 0; i < 32; i++) {
 				if (j < sharedKey.length) {
 					key[i] ^= sharedKey[j++];
-				} else {
+				}
+				else {
 					break;
 				}
 			}
@@ -84,7 +83,8 @@ public class CCryptSecretKeyFactorySpi extends SecretKeyFactorySpi {
 			// byte array is changed, but rather safe than sorry...
 			rijndael.init(true, new KeyParameter(key));
 			rijndael.processBlock(doubleBuffer[a], 0, doubleBuffer[b], 0);
-		} while (j < sharedKey.length);
+		}
+		while (j < sharedKey.length);
 
 		return new CCryptKey(cCryptSpec, doubleBuffer[b]);
 	}
@@ -94,18 +94,19 @@ public class CCryptSecretKeyFactorySpi extends SecretKeyFactorySpi {
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override
-	protected KeySpec engineGetKeySpec(SecretKey key, Class clazz)
-			throws InvalidKeySpecException {
+	protected KeySpec engineGetKeySpec(SecretKey key, Class clazz) throws InvalidKeySpecException {
 
 		try {
 			assertCCryptKey(key);
-		} catch (InvalidKeyException e) {
+		}
+		catch (InvalidKeyException e) {
 			throw new InvalidKeySpecException(e.getMessage());
 		}
 
 		if (clazz.equals(CCryptKeySpec.class)) {
 			return ((CCryptKey) key).getSpec();
-		} else {
+		}
+		else {
 			throw new InvalidKeySpecException();
 		}
 	}
@@ -114,28 +115,24 @@ public class CCryptSecretKeyFactorySpi extends SecretKeyFactorySpi {
 	 * Only supports {@link CCryptKey} instances.
 	 */
 	@Override
-	protected SecretKey engineTranslateKey(SecretKey key)
-			throws InvalidKeyException {
+	protected SecretKey engineTranslateKey(SecretKey key) throws InvalidKeyException {
 
 		assertCCryptKey(key);
-		
+
 		return key;
 	}
 
 	// -- CCryptSecretKeyFactorySpi
 
-	private void assertCCryptKeySpec(KeySpec keySpec)
-			throws InvalidKeySpecException {
+	private void assertCCryptKeySpec(KeySpec keySpec) throws InvalidKeySpecException {
 		if (!(keySpec instanceof CCryptKeySpec)) {
-			throw new InvalidKeySpecException("Only instances of "
-					+ CCryptKeySpec.class + " supported!");
+			throw new InvalidKeySpecException("Only instances of " + CCryptKeySpec.class + " supported!");
 		}
 	}
 
 	private void assertCCryptKey(SecretKey key) throws InvalidKeyException {
 		if (!(key instanceof CCryptKey)) {
-			throw new InvalidKeyException("Only instances of "
-					+ CCryptKey.class + " supported!");
+			throw new InvalidKeyException("Only instances of " + CCryptKey.class + " supported!");
 		}
 	}
 

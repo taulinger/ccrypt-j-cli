@@ -21,48 +21,48 @@ import org.slf4j.LoggerFactory;
 
 public class CCryptTest {
 
-    private Logger log = LoggerFactory.getLogger(getClass());
+	private Logger log = LoggerFactory.getLogger(getClass());
 
-    @BeforeAll
-    public static void addBouncyCastleProvider() {
-        // TODO move to configuration files
-        Security.addProvider(new BouncyCastleProvider());
-    }
+	@BeforeAll
+	public static void addBouncyCastleProvider() {
+		// TODO move to configuration files
+		Security.addProvider(new BouncyCastleProvider());
+	}
 
-    @Test
-    public void encrypt_file_and_delete() throws IOException, InvalidKeySpecException {
-        URL url = getClass().getResource("jabberwocky.txt");
-        assertNotNull(url);
-        File plain = File.createTempFile("jabberwocky-", ".txt");
-        plain.deleteOnExit();
+	@Test
+	public void encrypt_file_and_delete() throws IOException, InvalidKeySpecException {
+		URL url = getClass().getResource("jabberwocky.txt");
+		assertNotNull(url);
+		File plain = File.createTempFile("jabberwocky-", ".txt");
+		plain.deleteOnExit();
 
-        File cipher = new File(plain.getAbsolutePath() + ".cpt");
+		File cipher = new File(plain.getAbsolutePath() + ".cpt");
 
-        FileUtils.copyURLToFile(url, plain);
+		FileUtils.copyURLToFile(url, plain);
 
-        CCrypt cCrypt = new CCrypt("through the looking glass");
-        cCrypt.encrypt(plain);
+		CCrypt cCrypt = new CCrypt("through the looking glass");
+		cCrypt.encrypt(plain);
 
-        assertFalse(plain.exists());
-        assertTrue(cipher.exists());
-    }
+		assertFalse(plain.exists());
+		assertTrue(cipher.exists());
+	}
 
-    @Test
-    public void decrypt_file_and_delete() throws IOException, InvalidKeySpecException {
-        URL url = getClass().getResource("jabberwocky.txt.cpt");
-        assertNotNull(url);
-        File cipher = File.createTempFile("jabberwocky-", ".txt.cpt");
-        cipher.deleteOnExit();
-        String filename = cipher.getAbsolutePath();
-        File plain = new File(filename.substring(0, filename.length() - ".cpt".length()));
+	@Test
+	public void decrypt_file_and_delete() throws IOException, InvalidKeySpecException {
+		URL url = getClass().getResource("jabberwocky.txt.cpt");
+		assertNotNull(url);
+		File cipher = File.createTempFile("jabberwocky-", ".txt.cpt");
+		cipher.deleteOnExit();
+		String filename = cipher.getAbsolutePath();
+		File plain = new File(filename.substring(0, filename.length() - ".cpt".length()));
 
-        FileUtils.copyURLToFile(url, cipher);
+		FileUtils.copyURLToFile(url, cipher);
 
-        CCrypt cCrypt = new CCrypt("through the looking glass");
-        cCrypt.decrypt(cipher);
+		CCrypt cCrypt = new CCrypt("through the looking glass");
+		cCrypt.decrypt(cipher);
 
-        assertTrue(plain.exists());
-        assertFalse(cipher.exists());
-    }
+		assertTrue(plain.exists());
+		assertFalse(cipher.exists());
+	}
 
 }

@@ -22,38 +22,40 @@ import se.jabberwocky.ccryptj.jce.CCryptSecretKeyFactorySpi;
 
 public class CCryptInputStreamTest {
 
-    private SecretKey key;
-    private byte[] expected;
-    private byte[] actual;
-    private CCryptSecretKeyFactorySpi keyFactory;
+	private SecretKey key;
 
-    @BeforeEach
-    public void setup() throws NoSuchAlgorithmException,
-            NoSuchProviderException, NoSuchPaddingException, IOException,
-            InvalidKeySpecException {
+	private byte[] expected;
 
-        keyFactory = new CCryptSecretKeyFactorySpi();
-        CCryptKeySpec spec = new CCryptKeySpec("through the looking glass");
-        key = keyFactory.engineGenerateSecret(spec);
+	private byte[] actual;
 
-        InputStream in = getClass().getResourceAsStream("jabberwocky.txt");
-        assertNotNull(in, "Plaintext source cannot be null!");
-        expected = IOUtils.toByteArray(in);
-    }
+	private CCryptSecretKeyFactorySpi keyFactory;
 
-    @Test
-    public void test() throws IOException {
-        InputStream in = getClass().getResourceAsStream("jabberwocky.txt.cpt");
-        assertNotNull(in, "Ciphertext source cannot be null!");
-        // TODO test with magic number validation
-        CCryptInputStream ccryptStream = new CCryptInputStream(key, in, false);
-        actual = IOUtils.toByteArray(ccryptStream);
+	@BeforeEach
+	public void setup() throws NoSuchAlgorithmException, NoSuchProviderException, NoSuchPaddingException, IOException,
+			InvalidKeySpecException {
 
-        String actualString = new String(actual);
-        String expectedString = new String(expected);
+		keyFactory = new CCryptSecretKeyFactorySpi();
+		CCryptKeySpec spec = new CCryptKeySpec("through the looking glass");
+		key = keyFactory.engineGenerateSecret(spec);
 
-        assertEquals(expectedString.length(), actualString.length());
-        assertEquals(expectedString, actualString);
-    }
+		InputStream in = getClass().getResourceAsStream("jabberwocky.txt");
+		assertNotNull(in, "Plaintext source cannot be null!");
+		expected = IOUtils.toByteArray(in);
+	}
+
+	@Test
+	public void test() throws IOException {
+		InputStream in = getClass().getResourceAsStream("jabberwocky.txt.cpt");
+		assertNotNull(in, "Ciphertext source cannot be null!");
+		// TODO test with magic number validation
+		CCryptInputStream ccryptStream = new CCryptInputStream(key, in, false);
+		actual = IOUtils.toByteArray(ccryptStream);
+
+		String actualString = new String(actual);
+		String expectedString = new String(expected);
+
+		assertEquals(expectedString.length(), actualString.length());
+		assertEquals(expectedString, actualString);
+	}
 
 }

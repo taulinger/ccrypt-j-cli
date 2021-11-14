@@ -14,30 +14,31 @@ import org.junit.jupiter.api.Test;
 
 public class CCryptKeyFactoryTest {
 
-    private Logger log = LoggerFactory.getLogger(getClass());
+	private Logger log = LoggerFactory.getLogger(getClass());
 
-    private CCryptSecretKeyFactorySpi keyFactory;
-    private CCryptKeySpec keySpec;
-    private CCryptKey key;
+	private CCryptSecretKeyFactorySpi keyFactory;
 
-    @BeforeEach
-    public void setup() {
-        keyFactory = new CCryptSecretKeyFactorySpi();
-        keySpec = new CCryptKeySpec("Much ado about nothing!");
-    }
+	private CCryptKeySpec keySpec;
 
-    /**
-     * Test method for
-     * {@link se.jabberwocky.ccrypt.jce.CCryptSecretKeyFactorySpi#engineGenerateSecret(se.jabberwocky.ccrypt.jce.CCryptKeySpec)}
-     * .
-     *
-     * @throws InvalidKeySpecException
-     */
-    @Test
-    public void testGenerateKey() throws InvalidKeySpecException {
-        key = keyFactory.engineGenerateSecret(keySpec);
-        assertNotNull(key);
-        log.debug("CCryptKey: '{}'", key);
-    }
+	private CCryptKey key;
+
+	@BeforeEach
+	public void setup() {
+		keyFactory = new CCryptSecretKeyFactorySpi();
+		keySpec = new CCryptKeySpec("Much ado about nothing!");
+	}
+
+	/**
+	 * Test method for
+	 * {@link se.jabberwocky.ccrypt.jce.CCryptSecretKeyFactorySpi#engineGenerateSecret(se.jabberwocky.ccrypt.jce.CCryptKeySpec)}
+	 * .
+	 * @throws InvalidKeySpecException
+	 */
+	@Test
+	public void testGenerateKey() throws InvalidKeySpecException {
+		key = keyFactory.engineGenerateSecret(keySpec);
+		assertNotNull(key);
+		log.debug("CCryptKey: '{}'", key);
+	}
 
 }

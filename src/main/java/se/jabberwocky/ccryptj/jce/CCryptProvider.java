@@ -9,7 +9,9 @@ public final class CCryptProvider extends Provider {
 	private static final long serialVersionUID = 1L;
 
 	public static final String PROVIDER_NAME = "ccrypt";
+
 	public static final double PROVIDER_VERSION = CCryptConstants.CCRYPT_VERSION_NUMBER;
+
 	public static final String PROVIDER_INFO = "http://ccrypt.sourceforge.net/";
 
 	public CCryptProvider() {
@@ -19,8 +21,7 @@ public final class CCryptProvider extends Provider {
 		// TODO setup JAR signing in Maven POM
 		super(PROVIDER_NAME, PROVIDER_VERSION, PROVIDER_INFO);
 
-		put("SecretKeyFactory." + CCryptConstants.CCRYPT_ALGORITHM,
-				CCryptSecretKeyFactorySpi.class.getName());
+		put("SecretKeyFactory." + CCryptConstants.CCRYPT_ALGORITHM, CCryptSecretKeyFactorySpi.class.getName());
 	}
 
 }

@@ -5,27 +5,24 @@ import java.util.Arrays;
 import javax.crypto.SecretKey;
 
 /**
- * The Rijndael 256-bit key used in the CCrypt implementation of the AES/CFB
- * crypto.
+ * The Rijndael 256-bit key used in the CCrypt implementation of the AES/CFB crypto.
  */
 public final class CCryptKey implements SecretKey {
 
 	private static final long serialVersionUID = 1L;
 
 	private final byte[] key;
+
 	private final CCryptKeySpec spec;
 
 	/**
 	 * Copies the key into a new byte array to prevent inadvert manipulation.
-	 * 
-	 * @param spec
-	 *            the key specification from whence this CCrypt key was derived
-	 * @param key
-	 *            256 bit key stored as a 32 byte array
+	 * @param spec the key specification from whence this CCrypt key was derived
+	 * @param key 256 bit key stored as a 32 byte array
 	 */
 	CCryptKey(CCryptKeySpec spec, byte[] key) {
 
-		if(key.length != 32) {
+		if (key.length != 32) {
 			throw new IllegalArgumentException("CCrypt keys must be 256 bits");
 		}
 
@@ -69,11 +66,12 @@ public final class CCryptKey implements SecretKey {
 		builder.append("]");
 		return builder.toString();
 	}
-	
+
 	@Override
 	protected void finalize() throws Throwable {
 		// "burn after reading"
 		Arrays.fill(key, (byte) 0);
 		super.finalize();
 	}
+
 }

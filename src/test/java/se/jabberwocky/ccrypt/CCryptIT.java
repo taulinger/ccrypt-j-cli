@@ -21,116 +21,111 @@ import org.junit.jupiter.api.Test;
 
 public class CCryptIT {
 
-    private static final String CCRYPT_BINARY = "/usr/local/bin/ccrypt";
-    private URL cipherText;
+	private static final String CCRYPT_BINARY = "/usr/local/bin/ccrypt";
 
-    @BeforeEach
-    public void setup() {
-    }
+	private URL cipherText;
 
-    @Test
-    public void ccrypt_binary() throws IOException,
-            InterruptedException {
-        ProcessBuilder builder = new ProcessBuilder(CCRYPT_BINARY, "-V");
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        Process ccrypt = builder.start();
-        IOUtils.copy(ccrypt.getInputStream(), buffer);
-        ccrypt.waitFor();
-        assertEquals(0, ccrypt.exitValue(), "ccrypt exited abnormally");
-        String output = buffer.toString();
-        assertEquals("ccrypt "
-                + CCryptConstants.CCRYPT_VERSION,
-                output.substring(0, "ccrypt 1.10".length()), "Unsupported ccrypt version");
-    }
+	@BeforeEach
+	public void setup() {
+	}
 
-    @Test
-    @Disabled
-    public void encrypt_file() throws IOException, InterruptedException {
-        URL cipherTextURI = getClass().getResource("jabberwocky.txt.cpt");
-        assertNotNull(cipherTextURI);
+	@Test
+	public void ccrypt_binary() throws IOException, InterruptedException {
+		ProcessBuilder builder = new ProcessBuilder(CCRYPT_BINARY, "-V");
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		Process ccrypt = builder.start();
+		IOUtils.copy(ccrypt.getInputStream(), buffer);
+		ccrypt.waitFor();
+		assertEquals(0, ccrypt.exitValue(), "ccrypt exited abnormally");
+		String output = buffer.toString();
+		assertEquals("ccrypt " + CCryptConstants.CCRYPT_VERSION, output.substring(0, "ccrypt 1.10".length()),
+				"Unsupported ccrypt version");
+	}
 
-        ProcessBuilder builder = new ProcessBuilder(CCRYPT_BINARY, "--key",
-                "through the looking glass", "-m", "-c", "-d",
-                cipherTextURI.getFile());
+	@Test
+	@Disabled
+	public void encrypt_file() throws IOException, InterruptedException {
+		URL cipherTextURI = getClass().getResource("jabberwocky.txt.cpt");
+		assertNotNull(cipherTextURI);
 
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        Process ccrypt = builder.start();
-        IOUtils.copy(ccrypt.getInputStream(), buffer);
-        ccrypt.waitFor();
-        assertEquals(0, ccrypt.exitValue(), "ccrypt exited abnormally");
-        String output = buffer.toString();
-        System.out.println(output);
-    }
+		ProcessBuilder builder = new ProcessBuilder(CCRYPT_BINARY, "--key", "through the looking glass", "-m", "-c",
+				"-d", cipherTextURI.getFile());
 
-    @Test
-    public void encrypt_file_and_delete() throws IOException,
-            InvalidKeySpecException, InterruptedException {
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		Process ccrypt = builder.start();
+		IOUtils.copy(ccrypt.getInputStream(), buffer);
+		ccrypt.waitFor();
+		assertEquals(0, ccrypt.exitValue(), "ccrypt exited abnormally");
+		String output = buffer.toString();
+		System.out.println(output);
+	}
 
-        URL url = getClass().getResource("jabberwocky.txt");
-        assertNotNull(url);
-        File plain = File.createTempFile("jabberwocky-", ".txt");
-        plain.deleteOnExit();
+	@Test
+	public void encrypt_file_and_delete() throws IOException, InvalidKeySpecException, InterruptedException {
 
-        File cipher = new File(plain.getAbsolutePath() + ".cpt");
+		URL url = getClass().getResource("jabberwocky.txt");
+		assertNotNull(url);
+		File plain = File.createTempFile("jabberwocky-", ".txt");
+		plain.deleteOnExit();
 
-        FileUtils.copyURLToFile(url, plain);
+		File cipher = new File(plain.getAbsolutePath() + ".cpt");
 
-        CCrypt cCrypt = new CCrypt("through the looking glass");
-        cCrypt.encrypt(plain);
+		FileUtils.copyURLToFile(url, plain);
 
-        assertFalse(plain.exists());
-        assertTrue(cipher.exists());
+		CCrypt cCrypt = new CCrypt("through the looking glass");
+		cCrypt.encrypt(plain);
 
-        ProcessBuilder builder = new ProcessBuilder(CCRYPT_BINARY, "--key",
-                "through the looking glass", "-c", "-m",
-                cipher.getAbsolutePath());
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        Process ccrypt = builder.start();
-        IOUtils.copy(ccrypt.getInputStream(), buffer);
-        IOUtils.copy(ccrypt.getErrorStream(), System.err);
-        ccrypt.waitFor();
+		assertFalse(plain.exists());
+		assertTrue(cipher.exists());
 
-        assertEquals(0, ccrypt.exitValue(), "Wrong exit value");
+		ProcessBuilder builder = new ProcessBuilder(CCRYPT_BINARY, "--key", "through the looking glass", "-c", "-m",
+				cipher.getAbsolutePath());
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		Process ccrypt = builder.start();
+		IOUtils.copy(ccrypt.getInputStream(), buffer);
+		IOUtils.copy(ccrypt.getErrorStream(), System.err);
+		ccrypt.waitFor();
 
-        String output = buffer.toString();
-        String plaintext = IOUtils.toString(url);
+		assertEquals(0, ccrypt.exitValue(), "Wrong exit value");
 
-        System.out.println(output);
-        assertEquals(plaintext, output);
+		String output = buffer.toString();
+		String plaintext = IOUtils.toString(url);
 
-        assertEquals(0, ccrypt.exitValue(), "ccrypt exited abnormally");
+		System.out.println(output);
+		assertEquals(plaintext, output);
 
-    }
+		assertEquals(0, ccrypt.exitValue(), "ccrypt exited abnormally");
 
-    @Test
-    @Disabled
-    public void check_magic() throws IOException,
-            InvalidKeySpecException, InterruptedException {
+	}
 
-        URL url = getClass().getResource("jabberwocky.txt");
-        assertNotNull(url);
-        File plain = File.createTempFile("jabberwocky-", ".txt");
-        plain.deleteOnExit();
+	@Test
+	@Disabled
+	public void check_magic() throws IOException, InvalidKeySpecException, InterruptedException {
 
-        FileUtils.copyURLToFile(url, plain);
+		URL url = getClass().getResource("jabberwocky.txt");
+		assertNotNull(url);
+		File plain = File.createTempFile("jabberwocky-", ".txt");
+		plain.deleteOnExit();
 
-        ProcessBuilder builder = new ProcessBuilder(CCRYPT_BINARY, "--key",
-                "through the looking glass", "-e", plain.getAbsolutePath());
+		FileUtils.copyURLToFile(url, plain);
 
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        Process ccrypt = builder.start();
-        IOUtils.copy(ccrypt.getInputStream(), buffer);
-        IOUtils.copy(ccrypt.getErrorStream(), System.err);
-        ccrypt.waitFor();
+		ProcessBuilder builder = new ProcessBuilder(CCRYPT_BINARY, "--key", "through the looking glass", "-e",
+				plain.getAbsolutePath());
 
-        assertEquals(0, ccrypt.exitValue(), "Wrong exit value");
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		Process ccrypt = builder.start();
+		IOUtils.copy(ccrypt.getInputStream(), buffer);
+		IOUtils.copy(ccrypt.getErrorStream(), System.err);
+		ccrypt.waitFor();
 
-        String output = buffer.toString();
-        String plaintext = IOUtils.toString(url);
+		assertEquals(0, ccrypt.exitValue(), "Wrong exit value");
 
-        System.out.println(output);
-        assertEquals(plaintext, output);
+		String output = buffer.toString();
+		String plaintext = IOUtils.toString(url);
 
-    }
+		System.out.println(output);
+		assertEquals(plaintext, output);
+
+	}
 
 }

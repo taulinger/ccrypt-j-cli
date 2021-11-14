@@ -28,221 +28,221 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 /**
- *
  * @author taulinger
  */
-@ExtendWith({MockitoExtension.class, MockServerExtension.class})
+@ExtendWith({ MockitoExtension.class, MockServerExtension.class })
 public class AppTest {
 
-    @Spy
-    private App app;
+	@Spy
+	private App app;
 
-    @Test
-    public void cliShouldCallPrintHelpMethod() {
+	@Test
+	public void cliShouldCallPrintHelpMethod() {
 
-        doNothing().when(app).printHelp(any(Options.class));
+		doNothing().when(app).printHelp(any(Options.class));
 
-        app.run("");
-        app.run("-h");
-        app.run("--help");
+		app.run("");
+		app.run("-h");
+		app.run("--help");
 
-        verify(app, times(3)).printHelp(any(Options.class));
-    }
+		verify(app, times(3)).printHelp(any(Options.class));
+	}
 
-    @Test
-    public void cliShouldCallDecryptMethod() throws URISyntaxException, IOException, InvalidKeySpecException {
+	@Test
+	public void cliShouldCallDecryptMethod() throws URISyntaxException, IOException, InvalidKeySpecException {
 
-        var file = "/foo/bar.cpt";
-        doNothing().when(app).decrypt(eq(Path.of(file)), any(Boolean.class));
+		var file = "/foo/bar.cpt";
+		doNothing().when(app).decrypt(eq(Path.of(file)), any(Boolean.class));
 
-        app.run("-d", file);
-        app.run("--decrypt", "/foo/bar.cpt");
-        app.run("-d", "/foo/bar.cpt", "-f");
-        app.run("--decrypt", "/foo/bar.cpt", "-f");
+		app.run("-d", file);
+		app.run("--decrypt", "/foo/bar.cpt");
+		app.run("-d", "/foo/bar.cpt", "-f");
+		app.run("--decrypt", "/foo/bar.cpt", "-f");
 
-        verify(app, times(2)).decrypt(Path.of(file), false);
-        verify(app, times(2)).decrypt(Path.of(file), true);
-    }
+		verify(app, times(2)).decrypt(Path.of(file), false);
+		verify(app, times(2)).decrypt(Path.of(file), true);
+	}
 
-    @Test
-    public void cliShouldCallEncryptMethod() throws URISyntaxException, IOException, InvalidKeySpecException {
+	@Test
+	public void cliShouldCallEncryptMethod() throws URISyntaxException, IOException, InvalidKeySpecException {
 
-        doNothing().when(app).encrypt(any(Path.class), any(Boolean.class));
+		doNothing().when(app).encrypt(any(Path.class), any(Boolean.class));
 
-        app.run("-e", "/foo/bar.some");
-        app.run("--encrypt", "/foo/bar.some");
-        app.run("-e", "/foo/bar.some", "-f");
-        app.run("--encrypt", "/foo/bar.some", "-f");
+		app.run("-e", "/foo/bar.some");
+		app.run("--encrypt", "/foo/bar.some");
+		app.run("-e", "/foo/bar.some", "-f");
+		app.run("--encrypt", "/foo/bar.some", "-f");
 
-        verify(app, times(2)).encrypt(Path.of("/foo/bar.some"), false);
-        verify(app, times(2)).encrypt(Path.of("/foo/bar.some"), true);
-    }
+		verify(app, times(2)).encrypt(Path.of("/foo/bar.some"), false);
+		verify(app, times(2)).encrypt(Path.of("/foo/bar.some"), true);
+	}
 
-    @Test
-    public void shouldDecryptFile(@TempDir Path tempDir) throws URISyntaxException, IOException, InvalidKeySpecException {
+	@Test
+	public void shouldDecryptFile(@TempDir Path tempDir)
+			throws URISyntaxException, IOException, InvalidKeySpecException {
 
-        var filename = "file.txt.cpt";
-        doReturn("secret".toCharArray()).when(app).readPassword(eq("Please enter password:"));
-        var testFile = Path.of("", "src/test/resources/de/taulinger/ccryptjcli").resolve(filename);
-        Files.copy(testFile, tempDir.resolve(filename));
+		var filename = "file.txt.cpt";
+		doReturn("secret".toCharArray()).when(app).readPassword(eq("Please enter password:"));
+		var testFile = Path.of("", "src/test/resources/de/taulinger/ccryptjcli").resolve(filename);
+		Files.copy(testFile, tempDir.resolve(filename));
 
-        app.decrypt(tempDir.resolve(filename), false);
+		app.decrypt(tempDir.resolve(filename), false);
 
-        assertEquals("42", Files.readString(tempDir.resolve("file.txt")));
-    }
-    
-    @Test
-    public void dencryptShouldThrowWhenFileDoesNotExists(@TempDir Path tempDir) throws URISyntaxException, IOException, InvalidKeySpecException {
+		assertEquals("42", Files.readString(tempDir.resolve("file.txt")));
+	}
 
-        var filename = "file.txt.cpt";
+	@Test
+	public void dencryptShouldThrowWhenFileDoesNotExists(@TempDir Path tempDir)
+			throws URISyntaxException, IOException, InvalidKeySpecException {
 
-        var thrown = assertThrows(RuntimeException.class, () -> {
-            app.decrypt(tempDir.resolve(filename), false);
-        });
+		var filename = "file.txt.cpt";
 
-        assertTrue(thrown.getMessage().contains("File " + tempDir.resolve(filename) + " does not exists"));
-    }
+		var thrown = assertThrows(RuntimeException.class, () -> {
+			app.decrypt(tempDir.resolve(filename), false);
+		});
 
-    @Test
-    public void shouldNotDecryptWhenTargetFileAlreadyExists(@TempDir Path tempDir) throws URISyntaxException, IOException, InvalidKeySpecException {
+		assertTrue(thrown.getMessage().contains("File " + tempDir.resolve(filename) + " does not exists"));
+	}
 
-        var encryptedFilename = "file.txt.cpt";
-        var decryptedFilename = "file.txt";
-        Files.copy(Path.of("", "src/test/resources/de/taulinger/ccryptjcli").resolve(encryptedFilename), tempDir.resolve(encryptedFilename));
-        Files.createFile(tempDir.resolve(decryptedFilename));
+	@Test
+	public void shouldNotDecryptWhenTargetFileAlreadyExists(@TempDir Path tempDir)
+			throws URISyntaxException, IOException, InvalidKeySpecException {
 
-        var thrown = assertThrows(RuntimeException.class, () -> {
-            app.decrypt(tempDir.resolve(encryptedFilename), false);
-        }, "File " + decryptedFilename + " already exists");
+		var encryptedFilename = "file.txt.cpt";
+		var decryptedFilename = "file.txt";
+		Files.copy(Path.of("", "src/test/resources/de/taulinger/ccryptjcli").resolve(encryptedFilename),
+				tempDir.resolve(encryptedFilename));
+		Files.createFile(tempDir.resolve(decryptedFilename));
 
-        assertTrue(thrown.getMessage().contains("File " + tempDir.resolve(decryptedFilename) + " already exists"));
-    }
+		var thrown = assertThrows(RuntimeException.class, () -> {
+			app.decrypt(tempDir.resolve(encryptedFilename), false);
+		}, "File " + decryptedFilename + " already exists");
 
-    @Test
-    public void shouldDecryptWhenTargetFileAreadyExists(@TempDir Path tempDir) throws URISyntaxException, IOException, InvalidKeySpecException {
+		assertTrue(thrown.getMessage().contains("File " + tempDir.resolve(decryptedFilename) + " already exists"));
+	}
 
-        var encryptedFilename = "file.txt.cpt";
-        var decryptedFilename = "file.txt";
-        Files.copy(Path.of("", "src/test/resources/de/taulinger/ccryptjcli").resolve(encryptedFilename), tempDir.resolve(encryptedFilename));
-        Files.createFile(tempDir.resolve(decryptedFilename));
-        doReturn("secret".toCharArray()).when(app).readPassword(eq("Please enter password:"));
+	@Test
+	public void shouldDecryptWhenTargetFileAreadyExists(@TempDir Path tempDir)
+			throws URISyntaxException, IOException, InvalidKeySpecException {
 
-        app.decrypt(tempDir.resolve(encryptedFilename), true);
+		var encryptedFilename = "file.txt.cpt";
+		var decryptedFilename = "file.txt";
+		Files.copy(Path.of("", "src/test/resources/de/taulinger/ccryptjcli").resolve(encryptedFilename),
+				tempDir.resolve(encryptedFilename));
+		Files.createFile(tempDir.resolve(decryptedFilename));
+		doReturn("secret".toCharArray()).when(app).readPassword(eq("Please enter password:"));
 
-        assertEquals("42", Files.readString(tempDir.resolve("file.txt")));
-    }
+		app.decrypt(tempDir.resolve(encryptedFilename), true);
 
-    @Test
-    public void shouldDownloadHttpResource(@TempDir Path tempDir, ClientAndServer client) throws URISyntaxException, IOException, InvalidKeySpecException {
-        var filename = "file.txt.cpt";
-        var testFile = Path.of("", "src/test/resources/de/taulinger/ccryptjcli").resolve(filename);
-        var testResource = "http://localhost:" + client.getPort() + "/" + filename;
-        client.when(
-                request()
-                        .withMethod("GET")
-                        .withPath("/" + filename),
-                exactly(1)
-        )
-                .respond(
-                        response()
-                                .withBody(Files.readAllBytes(testFile))
-                );
-        doReturn(tempDir).when(app).getCurrentFolder();
+		assertEquals("42", Files.readString(tempDir.resolve("file.txt")));
+	}
 
-        var file = app.downloadResource(testResource);
+	@Test
+	public void shouldDownloadHttpResource(@TempDir Path tempDir, ClientAndServer client)
+			throws URISyntaxException, IOException, InvalidKeySpecException {
+		var filename = "file.txt.cpt";
+		var testFile = Path.of("", "src/test/resources/de/taulinger/ccryptjcli").resolve(filename);
+		var testResource = "http://localhost:" + client.getPort() + "/" + filename;
+		client.when(request().withMethod("GET").withPath("/" + filename), exactly(1))
+				.respond(response().withBody(Files.readAllBytes(testFile)));
+		doReturn(tempDir).when(app).getCurrentFolder();
 
-        assertEquals(file, tempDir.resolve(filename));
-    }
+		var file = app.downloadResource(testResource);
 
-    @Test
-    public void downloadShouldThrowAnExceptionWhenNotFound(@TempDir Path tempDir, ClientAndServer client) throws URISyntaxException, IOException, InvalidKeySpecException {
-        var filename = "file.txt.cpt";
-        var testResource = "http://localhost:" + client.getPort() + "/" + filename;
-        client.when(
-                request()
-                        .withMethod("GET")
-                        .withPath("/file.txt.cpt"),
-                exactly(1)
-        )
-                .respond(
-                        response()
-                                .withStatusCode(404)
-                );
-        doReturn(tempDir).when(app).getCurrentFolder();
+		assertEquals(file, tempDir.resolve(filename));
+	}
 
-        var thrown = assertThrows(RuntimeException.class, () -> {
-            app.downloadResource(testResource);
-        });
+	@Test
+	public void downloadShouldThrowAnExceptionWhenNotFound(@TempDir Path tempDir, ClientAndServer client)
+			throws URISyntaxException, IOException, InvalidKeySpecException {
+		var filename = "file.txt.cpt";
+		var testResource = "http://localhost:" + client.getPort() + "/" + filename;
+		client.when(request().withMethod("GET").withPath("/file.txt.cpt"), exactly(1))
+				.respond(response().withStatusCode(404));
+		doReturn(tempDir).when(app).getCurrentFolder();
 
-        assertTrue(thrown.getMessage().contains(testResource + " could not be fetched: 404"));
-    }
+		var thrown = assertThrows(RuntimeException.class, () -> {
+			app.downloadResource(testResource);
+		});
 
-    @Test
-    public void shouldEncryptFile(@TempDir Path tempDir) throws URISyntaxException, IOException, InvalidKeySpecException {
+		assertTrue(thrown.getMessage().contains(testResource + " could not be fetched: 404"));
+	}
 
-        var filename = "file.txt";
-        doReturn("secret".toCharArray()).when(app).readPassword(startsWith("Please enter password"));
-        var testFile = Path.of("", "src/test/resources/de/taulinger/ccryptjcli").resolve(filename);
-        Files.copy(testFile, tempDir.resolve(filename));
+	@Test
+	public void shouldEncryptFile(@TempDir Path tempDir)
+			throws URISyntaxException, IOException, InvalidKeySpecException {
 
-        app.encrypt(tempDir.resolve(filename), false);
+		var filename = "file.txt";
+		doReturn("secret".toCharArray()).when(app).readPassword(startsWith("Please enter password"));
+		var testFile = Path.of("", "src/test/resources/de/taulinger/ccryptjcli").resolve(filename);
+		Files.copy(testFile, tempDir.resolve(filename));
 
-        assertTrue(Files.exists(tempDir.resolve("file.txt.cpt")));
-    }
+		app.encrypt(tempDir.resolve(filename), false);
 
-    @Test
-    public void encryptShouldThrowWhenFileDoesNotExists(@TempDir Path tempDir) throws URISyntaxException, IOException, InvalidKeySpecException {
+		assertTrue(Files.exists(tempDir.resolve("file.txt.cpt")));
+	}
 
-        var filename = "file.txt";
+	@Test
+	public void encryptShouldThrowWhenFileDoesNotExists(@TempDir Path tempDir)
+			throws URISyntaxException, IOException, InvalidKeySpecException {
 
-        var thrown = assertThrows(RuntimeException.class, () -> {
-            app.encrypt(tempDir.resolve(filename), false);
-        });
+		var filename = "file.txt";
 
-        assertTrue(thrown.getMessage().contains("File " + tempDir.resolve(filename) + " does not exists"));
-    }
+		var thrown = assertThrows(RuntimeException.class, () -> {
+			app.encrypt(tempDir.resolve(filename), false);
+		});
 
-    @Test
-    public void shouldNotEcryptWhenTargetFileAlreadyExists(@TempDir Path tempDir) throws URISyntaxException, IOException, InvalidKeySpecException {
+		assertTrue(thrown.getMessage().contains("File " + tempDir.resolve(filename) + " does not exists"));
+	}
 
-        var encryptedFilename = "file.txt.cpt";
-        var decryptedFilename = "file.txt";
-        Files.copy(Path.of("", "src/test/resources/de/taulinger/ccryptjcli").resolve(decryptedFilename), tempDir.resolve(decryptedFilename));
-        Files.createFile(tempDir.resolve(encryptedFilename));
+	@Test
+	public void shouldNotEcryptWhenTargetFileAlreadyExists(@TempDir Path tempDir)
+			throws URISyntaxException, IOException, InvalidKeySpecException {
 
-        var thrown = assertThrows(RuntimeException.class, () -> {
-            app.encrypt(tempDir.resolve(decryptedFilename), false);
-        });
+		var encryptedFilename = "file.txt.cpt";
+		var decryptedFilename = "file.txt";
+		Files.copy(Path.of("", "src/test/resources/de/taulinger/ccryptjcli").resolve(decryptedFilename),
+				tempDir.resolve(decryptedFilename));
+		Files.createFile(tempDir.resolve(encryptedFilename));
 
-        assertTrue(thrown.getMessage().contains("File " + tempDir.resolve(encryptedFilename) + " already exists"));
-    }
+		var thrown = assertThrows(RuntimeException.class, () -> {
+			app.encrypt(tempDir.resolve(decryptedFilename), false);
+		});
 
-    @Test
-    public void shouldEncryptWhenTargetFileAlreadyExists(@TempDir Path tempDir) throws URISyntaxException, IOException, InvalidKeySpecException {
+		assertTrue(thrown.getMessage().contains("File " + tempDir.resolve(encryptedFilename) + " already exists"));
+	}
 
-        var encryptedFilename = "file.txt.cpt";
-        var decryptedFilename = "file.txt";
-        Files.copy(Path.of("", "src/test/resources/de/taulinger/ccryptjcli").resolve(decryptedFilename), tempDir.resolve(decryptedFilename));
-        Files.createFile(tempDir.resolve(encryptedFilename));
-        doReturn("secret".toCharArray()).when(app).readPassword(startsWith("Please enter password"));
+	@Test
+	public void shouldEncryptWhenTargetFileAlreadyExists(@TempDir Path tempDir)
+			throws URISyntaxException, IOException, InvalidKeySpecException {
 
-        app.encrypt(tempDir.resolve(decryptedFilename), true);
+		var encryptedFilename = "file.txt.cpt";
+		var decryptedFilename = "file.txt";
+		Files.copy(Path.of("", "src/test/resources/de/taulinger/ccryptjcli").resolve(decryptedFilename),
+				tempDir.resolve(decryptedFilename));
+		Files.createFile(tempDir.resolve(encryptedFilename));
+		doReturn("secret".toCharArray()).when(app).readPassword(startsWith("Please enter password"));
 
-        assertTrue(Files.exists(tempDir.resolve(encryptedFilename)));
-    }
+		app.encrypt(tempDir.resolve(decryptedFilename), true);
 
-    @Test
-    public void shouldNotEncryptWhenSecretsDoNotMatch(@TempDir Path tempDir) throws URISyntaxException, IOException, InvalidKeySpecException {
+		assertTrue(Files.exists(tempDir.resolve(encryptedFilename)));
+	}
 
-        var filename = "file.txt";
-        doReturn("secret".toCharArray(), "secret42".toCharArray()).when(app).readPassword(startsWith("Please enter password"));
-        var testFile = Path.of("", "src/test/resources/de/taulinger/ccryptjcli").resolve(filename);
-        Files.copy(testFile, tempDir.resolve(filename));
+	@Test
+	public void shouldNotEncryptWhenSecretsDoNotMatch(@TempDir Path tempDir)
+			throws URISyntaxException, IOException, InvalidKeySpecException {
 
-        var thrown = assertThrows(RuntimeException.class, () -> {
-            app.encrypt(tempDir.resolve(filename), false);
-        });
+		var filename = "file.txt";
+		doReturn("secret".toCharArray(), "secret42".toCharArray()).when(app)
+				.readPassword(startsWith("Please enter password"));
+		var testFile = Path.of("", "src/test/resources/de/taulinger/ccryptjcli").resolve(filename);
+		Files.copy(testFile, tempDir.resolve(filename));
 
-        assertTrue(thrown.getMessage().contains("Passwords do not match"));
-    }
+		var thrown = assertThrows(RuntimeException.class, () -> {
+			app.encrypt(tempDir.resolve(filename), false);
+		});
+
+		assertTrue(thrown.getMessage().contains("Passwords do not match"));
+	}
+
 }
