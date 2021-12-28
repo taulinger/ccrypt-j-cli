@@ -23,8 +23,8 @@ Prerquisites
 
 ## Building from source
 
-Prerquisites
-- JDK 11 or later must be installed (https://adoptopenjdk.net/)
+Prerequisites
+- JDK 11 or later must be installed (https://adoptium.net/)
 - Maven 3 must be installed
 
 Steps
