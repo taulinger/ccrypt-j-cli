@@ -9,13 +9,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 11
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
           java-version: 11
+          distribution: 'temurin'
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots verify
-      - run: mkdir staging && cp target/ccrypt-j-cli.jar staging
-      - uses: actions/upload-artifact@v2
-        with:
-          name: Package
-          path: staging
+#      - run: mkdir staging && cp target/ccrypt-j-cli.jar staging
+#      - uses: actions/upload-artifact@v2
+#        with:
+#          name: Package
+#          path: staging
