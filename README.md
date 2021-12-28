@@ -9,9 +9,9 @@ compatible with the [ccrypt](http://ccrypt.sourceforge.net/) command line tool.
 
 ## Usage
 
-Prerquisites
+Prerequisites
 
-- JRE/JDK 11 or later must be installed (https://adoptopenjdk.net/)
+- JRE/JDK 11 or later must be installed (https://adoptium.net/)
 
 <pre>
  java -jar ccrypt-j-cli [-d &lt;arg&gt; | -e &lt;arg&gt; | -h]  [-f]
