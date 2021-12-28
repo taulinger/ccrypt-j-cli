@@ -28,7 +28,7 @@ Prerequisites
 - Maven 3 must be installed
 
 Steps
-- Clone the Github project:
+- Clone the GitHub project:
 ```
 git clone https://github.com/taulinger/ccrypt-j-cli
 ```
