@@ -92,7 +92,7 @@ public class AppTest {
 	}
 
 	@Test
-	public void dencryptShouldThrowWhenFileDoesNotExists(@TempDir Path tempDir)
+	public void decryptShouldThrowWhenFileDoesNotExists(@TempDir Path tempDir)
 			throws URISyntaxException, IOException, InvalidKeySpecException {
 
 		var filename = "file.txt.cpt";
@@ -122,7 +122,7 @@ public class AppTest {
 	}
 
 	@Test
-	public void shouldDecryptWhenTargetFileAreadyExists(@TempDir Path tempDir)
+	public void shouldDecryptWhenTargetFileAlreadyExists(@TempDir Path tempDir)
 			throws URISyntaxException, IOException, InvalidKeySpecException {
 
 		var encryptedFilename = "file.txt.cpt";
@@ -196,7 +196,7 @@ public class AppTest {
 	}
 
 	@Test
-	public void shouldNotEcryptWhenTargetFileAlreadyExists(@TempDir Path tempDir)
+	public void shouldNotEncryptWhenTargetFileAlreadyExists(@TempDir Path tempDir)
 			throws URISyntaxException, IOException, InvalidKeySpecException {
 
 		var encryptedFilename = "file.txt.cpt";
